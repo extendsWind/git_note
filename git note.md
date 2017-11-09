@@ -174,9 +174,79 @@ tracking  new  files,  to  stage  files,  and  to  do  other  things  like  mark
 $ cat .gitignore
 *.[oa]
 *~
+
+# ignore files begin with "~"
+~*
+
+# do track by "!"
+!aa.txt
+
+# ignore all files in the build/ directory
+build/
+
+# ignore doc/notes.txt, but not doc/server/arch.txt
+doc/*.txt
+
+# ignore all .txt files in the doc/ directory
+doc/**/*.txt
+
 ```
 
 在调用git add *命令后，以 .o or .a or ~ 的文件都不会被添加到git仓库中。
+
+
+**Git diff 文档中具体改变**
+
+调用 git status 时，显示的是哪些文件的改变。git diff 能够得到文件中具体内容的改变。
+
+
+**Committing your change**
+
+git commit 提交staged状态下的所有文件。可以使用-m参数添加备注。
+
+`git commit -m "first commit" `
+
+
+**Skipping the staging area**
+
+可以跳过git add命令添加文件到staged状态，而直接提交所有文件。
+
+`git comit -a -m "skip staging area" `
+
+
+**Remove file**
+
+git rm  将非staged状态下的文件移除，当文件已经改变时，需要加入-f选项强制移除
+
+git rm --cached *.txt  将staged状态下的文件移除
+
+
+**Moving files**
+
+` git mv file_from file_to`  用于rename and move
+
+
+**View the Commit History**
+
+git log
+
+-p show the difference introduction, -2 limit to only the last two entries
+
+--stat  添加更加详细的状态
+
+$ git log --pretty=format:"%h - %an, %ar : %s"  格式化输出
+
+--graph 标注成简单的图
+
+--since=2.weeks 限定时间
+
+
+**Undoing Things**
+
+when you commit too early and possibly forget to add some files, or you mess up your commit message.
+
+git commit --amend
+
 
 
 

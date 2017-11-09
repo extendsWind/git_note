@@ -4,3 +4,18 @@
 
 # ignore files begin with "~"
 ~*
+
+# do track by "!"
+!aa.txt
+
+# ignore all files in the build/ directory
+build/
+
+# ignore doc/notes.txt, but not doc/server/arch.txt
+doc/*.txt
+
+# ignore all .txt files in the doc/ directory
+doc/**/*.txt
+
+
+
