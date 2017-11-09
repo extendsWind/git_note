@@ -1,0 +1,6 @@
+# ignore files ending ".o" or ".txt" or ".a"
+*.[oa]
+*.txt
+
+# ignore files begin with "~"
+~*
