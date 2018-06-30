@@ -1,8 +1,39 @@
 ---
-typora-copy-images-to: _git note_mdzip
+typora-copy-images-to: _git_note_mdzip
 ---
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [test](#test)
+    - [test](#test-1)
+        - [版本控制系统（vcs）发展](#版本控制系统vcs发展)
+            - [git 发展](#git-发展)
+        - [git basic](#git-basic)
+            - [not difference but snapshot](#not-difference-but-snapshot)
+            - [Nearly Every Operation Is Local](#nearly-every-operation-is-local)
+            - [Git Has Integrity](#git-has-integrity)
+            - [Git Generally Only Adds Data](#git-generally-only-adds-data)
+            - [The Three States](#the-three-states)
+            - [First-Time Git Setup](#first-time-git-setup)
+        - [git basic](#git-basic-1)
+        - [Git Branching](#git-branching)
+        - [git in server](#git-in-server)
+            - [四种协议](#四种协议)
+        - [distribute git 工作流程](#distribute-git-工作流程)
+            - [常见工作方式](#常见工作方式)
+            - [提交更改](#提交更改)
+            - [维护项目](#维护项目)
+        - [github相关](#github相关)
+
+<!-- markdown-toc end -->
+
+
+
+# test
 参考资料《Pro Git》
+
+## test
 
 ### 版本控制系统（vcs）发展
 
@@ -45,11 +76,11 @@ Git thinks about its data more like a stream of snapshots. It basically takes a 
 
 other VCSs :
 
-![1510056870016](_git note_mdzip/1510056870016.png)
+![1510056870016](_git_note_mdzip/1510056870016.png)
 
 Git:
 
-![1510056893404](_git note_mdzip/1510056893404.png)
+![1510056893404](_git_note_mdzip/1510056893404.png)
 
 #### Nearly Every Operation Is Local
 
@@ -75,7 +106,7 @@ Git has three main states: commited, modified, and staged.
 This leads us to the three main sections of a Git project: the Git directory, the
 working directory, and the staging area.
 
-![1510058343980](_git note_mdzip/1510058343980.png)
+![1510058343980](_git_note_mdzip/1510058343980.png)
 
 - The Git directory is where Git stores the metadata and object database for your  project.  This  is  the  most  important  part  of  Git,  and  it  is  what  is  copied when you clone a repository from another computer.
 - The  working  directory  is  a  single  checkout  of  one  version  of  the  project. These files are pulled out of the compressed database in the Git directory and placed on disk for you to use or modify.
@@ -134,6 +165,7 @@ color.diff=auto
 
 ### git basic
 
+
 **新建Git repository并添加文件**
 
 ``` bash
@@ -151,7 +183,7 @@ $ git commit -m 'initial project version'
 
 ` git status `
 
-![1510062348585](_git note_mdzip/1510062348585.png)
+![1510062348585](_git_note_mdzip/1510062348585.png)
 
 文件如果未加入git仓库会显示untracked file
 
@@ -247,6 +279,126 @@ when you commit too early and possibly forget to add some files, or you mess up 
 
 git commit --amend
 
+通常做法如下：
 
+``` bash
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+```
+
+
+**Unmodifying a Modified file**
+
+danger!  会删除文件的改变，将文件恢复到改变前的状态
+
+` $ git checkout -- CONTRIBUTING.md `
+
+
+**Remote**
+
+```
+$ git fetch [remote-name]
+
+$ git push origin master 
+
+
+$ git remote
+$ git remote add pb https://github.com/paulboone/ticgit
+$ git remote -v
+$ git remote show origin
+```
+
+**Tagging**
+
+git tage 列举素有的tag
+
+git tag -l 'v1.8.5*'  限制tag范围
+
+git tag -a v1.4 -m 'my version 1.4'  添加Annotated tag
+
+git tag v1.4-lw    添加lightWeight tag，不支持-a、-m、-s等操作
+
+git show v1.4
+
+git tag -a v1.2 9fceb02  向某个commit添加操作， specify the commit checksum (or part of it)
+
+
+git push origin v1.5   push指定的tag
+
+git push origin --tags    push所有的tags
+
+
+
+### Git Branching
+
+Some people refer to Git’s branching model as its “killer feature,” and it certainly sets Git apart in the VCS community.
+
+The way Git branches is incredibly lightweight, making branching operations nearly instantaneous, and switching back and forth between branches generally just as fast. Unlike  many  other  VCSs,  Git  encourages  workflows  that  branch  and  merge often, even multiple times in a day.
+
+
+
+### git in server
+
+#### 四种协议
+
+1. 本地协议（使用本地目录或者NFS，适用于本地和网络共享目录操作，速度相对较慢，git内部文件访问没有控制）
+2. HTTP。git 1.6.6之后的版本添加了smart http协议，使用git://开头，**最流行**。可以直接使用用户名+密码登录，不需要ssh协议的密钥，速度快。
+3. ssh协议。使用ssh:// or user@server: 开头。假设简单，无法匿名访问。
+4. git协议。单独使用一个端口9418，速度最快，但没有用户授权。一般会同时提供ssh或https协议。
+
+
+### distribute git 工作流程
+
+#### 常见工作方式
+
+1. 集中式工作
+
+所有开发人员将开发项目提交到同一仓库。*如果两个开发者从中心仓库克隆代码下来，同时作了一些修改，那么只有第一个开发者可以顺利地把数据推送回共享服务器。 第二个开发者在推送修改之前，必须先将第一个人的工作合并进来，这样才不会覆盖第一个人的修改。*
+
+
+2. 集成管理者工作流
+
+允许多个远程仓库存在。每个开发者拥有自己仓库的写权限和其他所有人仓库的读权限。需要做贡献的开发者首先clone出自己的仓库，然后推送修改，由官方仓库维护者拉取合并。
+
+> 
+1. 项目维护者推送到主仓库。
+2. 贡献者克隆此仓库，做出修改。
+3. 贡献者将数据推送到自己的公开仓库。
+4. 贡献者给维护者发送邮件，请求拉取自己的更新。
+5. 维护者在自己本地的仓库中，将贡献者的仓库加为远程仓库并合并修改。
+6. 维护者将合并后的修改推送到主仓库。
+
+3. 司令官与副官工作流
+
+主要用于超大型项目（linux内核），能够将开发分为三级，司令官、副官、普通开发者。
+
+#### 提交更改
+
+在小型团队中，只需要创建新的分支然后并入主分支（合并时要更新本地仓库(fetch))
+
+派生的公开项目没有直接的项目写权限，因此方式不同。fork项目后添加新的特征分支，pull-request通知项目作者拉取项目分支。某些情况需要rebase后提交，略麻烦。
+
+通过邮件发送补丁。
+
+#### 维护项目
+
+创建新的分支进行测试。
+
+对于需要长期合作的开发者，添加远程分支较为容易：
+
+```
+$ git remote add jessica git://github.com/jessica/myproject.git
+$ git fetch jessica
+$ git checkout -b rubyclient jessica/ruby-client
+```
+
+对于少量的修改，可以直接通过邮件发送修改补丁。
+
+对比提交代码。直接使用diff会将当前master分支与特征分支进行对比，而使用`$ git diff master...contrib`能够将其与公共祖先对比。
+
+打标签、生成构建号、准备一次发布、制作提交简报。
+
+### github相关
 
 
